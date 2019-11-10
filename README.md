@@ -1,12 +1,12 @@
 # listv
 Emacs list view
 
-# Features:
-## support item text property, so you can highlight some list item
-## toggle visibility of item field
-## filter item by field
+# Features
+1. support item text property, so you can highlight some list item
+2. toggle visibility of item field
+3. filter item by field
 
-# Usage:
+# Usage
 `
 ;; Here we use listv to implement a log viewer
 (with-current-buffer buffer
@@ -16,6 +16,6 @@ Emacs list view
   (listv-append-item (cons nil '(level "INFO" time "2019/11/09-11:18" source "UI" pid "1990" msg "info from UI component")))
   )
 `
-
+# GUI demo
 ![LogViewerUI](./logviewer-gui.png "logviewer-gui.png")
 
