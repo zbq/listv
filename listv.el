@@ -33,6 +33,7 @@
 ;;  (listv-append-item (cons '(face error) '(level "ERROR" time "2019/11/09-11:18" source "UI" pid "1990" msg "error from UI component")))
 ;;  (listv-append-item (cons '(face warning) '(level "WARNING" time "2019/11/09-11:18" source "UI" pid "1990" msg "warning from UI component")))
 ;;  (listv-append-item (cons nil '(level "INFO" time "2019/11/09-11:18" source "UI" pid "1990" msg "info from UI component")))
+;;  (switch-to-buffer-other-window buffer)
 ;;  )
 
 ;; (('face 'error) . ('level "ERROR" 'time "2019/11/09-17:38" 'source "UI" 'pid "1988")) ...
