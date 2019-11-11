@@ -28,13 +28,12 @@
 
 ;; Usage:
 ;; Here we use listv to implement a log viewer
-;; (with-current-buffer buffer
-;;  (listv-init-buffer '(level time source pid msg) '(?l ?t ?s ?p ?m) '(level time msg))
-;;  (listv-append-item (cons '(face error) '(level "ERROR" time "2019/11/09-11:18" source "UI" pid "1990" msg "error from UI component")))
-;;  (listv-append-item (cons '(face warning) '(level "WARNING" time "2019/11/09-11:18" source "UI" pid "1990" msg "warning from UI component")))
-;;  (listv-append-item (cons nil '(level "INFO" time "2019/11/09-11:18" source "UI" pid "1990" msg "info from UI component")))
-;;  (switch-to-buffer-other-window buffer)
-;;  )
+;; (let ((buffer (get-buffer "*logviewer*")))
+;;   (listv-init-buffer buffer '(level time source pid msg) '(?l ?t ?s ?p ?m) '(level time msg))
+;;   (listv-append-item buffer (cons '(face error) '(level "ERROR" time "2019/11/09-11:18" source "UI" pid "1990" msg "error from UI component")))
+;;   (listv-append-item buffer (cons '(face warning) '(level "WARNING" time "2019/11/09-11:18" source "UI" pid "1990" msg "warning from UI component")))
+;;   (listv-append-item buffer (cons nil '(level "INFO" time "2019/11/09-11:18" source "UI" pid "1990" msg "info from UI component")))
+;;   (switch-to-buffer-other-window buffer))
 
 ;; (('face 'error) . ('level "ERROR" 'time "2019/11/09-17:38" 'source "UI" 'pid "1988")) ...
 (defvar-local listv-items nil)
@@ -81,10 +80,11 @@
         (insert "\n")
         (set-buffer-modified-p nil)))))
 
-(defun listv-append-item (item)
-  (setf (cdr listv-items-tail) (list item))
-  (setf listv-items-tail (cdr listv-items-tail))
-  (listv-show-item item))
+(defun listv-append-item (buffer item)
+  (with-current-buffer buffer
+    (setf (cdr listv-items-tail) (list item))
+    (setf listv-items-tail (cdr listv-items-tail))
+    (listv-show-item item)))
 
 (defun listv-suggest-filters (item-value field)
   (let ((filters (getf listv-filters field))
@@ -146,22 +146,23 @@
     (define-key map "\C-c" submap)
     map))
 
-(defun listv-init-buffer (item-fields field-choices visible-fields)
+(defun listv-init-buffer (buffer item-fields field-choices visible-fields)
   (assert (= (length item-fields) (length field-choices)))
   (dolist (c field-choices)
     (assert (eq (type-of c) 'integer)))
-  (setq buffer-read-only nil)
-  (kill-all-local-variables)
-  (buffer-disable-undo)
-  (erase-buffer)
-  (setq listv-items (cons 'head nil))
-  (setq listv-items-tail listv-items)
-  (setq listv-item-fields item-fields)
-  (setq listv-field-choices field-choices)
-  (setq listv-visible-fields visible-fields)
-  (set-buffer-modified-p nil)
-  (setq buffer-read-only t)
-  (use-local-map listv-keymap)
-  (linum-mode))
+  (with-current-buffer buffer
+    (setq buffer-read-only nil)
+    (kill-all-local-variables)
+    (buffer-disable-undo)
+    (erase-buffer)
+    (setq listv-items (cons 'head nil))
+    (setq listv-items-tail listv-items)
+    (setq listv-item-fields item-fields)
+    (setq listv-field-choices field-choices)
+    (setq listv-visible-fields visible-fields)
+    (set-buffer-modified-p nil)
+    (setq buffer-read-only t)
+    (use-local-map listv-keymap)
+    (linum-mode)))
 
 (provide 'listv)
